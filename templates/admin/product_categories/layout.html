@@ -1,7 +1,7 @@
 {% extends "admin/layout.html" %}
 
 {% block title %}
-User management - {{ app_name }}
+Category management - {{ app_name }}
 {% endblock title %}
 
 {% block side_bar %}
@@ -15,9 +15,9 @@ User management - {{ app_name }}
             {{user.email}}
         </a>
     </li>
-    <li class="active"><a href="{{ url_for('admin.users_management_page') }}">User management</a></li>
+    <li><a href="{{ url_for('admin.users_management_page') }}">User management</a></li>
     <li><a href="{{ url_for('admin.products_management_page') }}">Product management</a></li>
     <li><a href="{{ url_for('admin.transactions_page') }}">Orders and transactions</a></li>
-    <li><a href="{{ url_for('admin.category_management_page') }}">Product categories management</a></li>
+    <li class="active"><a href="{{ url_for('admin.category_management_page') }}">Product categories management</a></li>
 </ul>
 {% endblock side_bar %}

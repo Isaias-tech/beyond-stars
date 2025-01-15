@@ -4,4 +4,20 @@
 Transaction management - {{ app_name }}
 {% endblock title %}
 
-{% block side_bar %}{% endblock side_bar %}
+{% block side_bar %}
+<ul>
+    <li class="your-account">
+        <a href="{{ url_for('admin.admin_profile_page') }}">
+            <div class="img-container">
+                <img src="{{ url_for('static', filename='media/icons/default-user.svg') }}"
+                    alt="profile-default-picture">
+            </div>
+            {{user.email}}
+        </a>
+    </li>
+    <li><a href="{{ url_for('admin.users_management_page') }}">User management</a></li>
+    <li><a href="{{ url_for('admin.products_management_page') }}">Product management</a></li>
+    <li class="active"><a href="{{ url_for('admin.transactions_page') }}">Orders and transactions</a></li>
+    <li><a href="{{ url_for('admin.category_management_page') }}">Product categories management</a></li>
+</ul>
+{% endblock side_bar %}
