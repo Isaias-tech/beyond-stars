@@ -1,0 +1,22 @@
+{% extends "auth/layout.html" %}
+
+{% block title %}
+Login - {{ app_name }}
+{% endblock title %}
+
+{% block form %}
+<form method="POST" action="{{ url_for('public.login_page') }}">
+    {{form.csrf_token}}
+    <div class="form-controller">
+        <label for="{{ form.email.name }}">{{ form.email.label }}:</label>
+        {{ form.email(placeholder="john@company.com") }}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.password.name }}">{{ form.password.label }}:</label>
+        {{ form.password(placeholder="••••••••") }}
+    </div>
+    <div class="action">
+        {{ form.submit }}
+    </div>
+</form>
+{% endblock form %}

@@ -1,0 +1,39 @@
+{% extends "auth/layout.html" %}
+
+{% block title %}
+Register - {{ app_name }}
+{% endblock title %}
+
+{% block form %}
+<form method="POST" action="{{ url_for('public.register_page') }}">
+    {{form.csrf_token}}
+    <div class="form-controller">
+        <label for="{{ form.profile.first_name.name }}">{{ form.profile.first_name.label }}:</label>
+        {{ form.profile.first_name(placeholder="John") }}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.profile.last_name.name }}">{{ form.profile.last_name.label }}:</label>
+        {{ form.profile.last_name(placeholder="Doe") }}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.email.name }}">{{ form.email.label }}:</label>
+        {{ form.email(placeholder="john@company.com") }}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.password.name }}">{{ form.password.label }}:</label>
+        {{ form.password(placeholder="••••••••") }}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.confirm_password.name }}">{{ form.confirm_password.label }}:</label>
+        {{ form.confirm_password(placeholder="••••••••") }}
+    </div>
+    {% for field, errors in form.errors.items() %}
+    <div class="alert alert-error">
+        {{ form[field].label }}: {{ ', '.join(errors) }}
+    </div>
+    {% endfor %}
+    <div class="action">
+        {{ form.submit }}
+    </div>
+</form>
+{% endblock form %}

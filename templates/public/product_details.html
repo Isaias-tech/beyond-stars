@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Products Detail - {{app_name}}
+{% endblock title %}
+
+{% block body %}
+<a href="/" class="brand">
+    <div class="img-container">
+        <img src="{{ url_for('static', filename='media/brand/beyond-stars-logo.svg') }}" alt="beyond-stars-logo">
+    </div>
+    <h1>{{ app_name }}</h1>
+</a>
+{% if user.is_authenticated %}
+<div class="profile_menu">
+    <div class="img-container">
+        {% if profile and profile.picture %}
+        <img src="{{ profile.picture }}" alt="profile-image">
+        {% else %}
+        <img src="{{ url_for('static', filename='media/icons/default-user.svg') }}" alt="profile-image">
+        {% endif %}
+    </div>
+    <p>Hi, {{ profile.first_name if profile else 'User' }}</p>
+</div>
+
+<form method="POST" action="{{ url_for('private.logout_page') }}">
+    {{ form.hidden_tag() }}
+    {{ form.submit() }}
+</form>
+{% else %}
+<a href="{{ url_for('public.login_page') }}">Login</a>
+{% endif %}
+{% endblock body %}

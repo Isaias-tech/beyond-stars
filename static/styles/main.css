@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Space+Grotesk&display=swap');
+
+* {
+	box-sizing     : border-box;
+	padding        : 0;
+	margin         : 0;
+	font-family    : 'Space Grotesk', 'Times New Roman', Times, sans-serif;
+	font-style     : normal;
+	scroll-behavior: smooth;
+}
+
+/* Flash Messages Container */
+#flash-messages-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Flash Message Styles */
+.flash-message {
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    animation: fade-in-out 3.5s forwards; 
+}
+
+/* Success Message */
+.flash-message.success {
+    background-color: #4caf50; /* Green */
+}
+
+/* Error Message */
+.flash-message.error {
+    background-color: #f44336; /* Red */
+}
+
+/* Warning Message */
+.flash-message.warning {
+    background-color: #ff9800; /* Orange */
+}
+
+/* Info Message */
+.flash-message.info {
+    background-color: #2196f3; /* Blue */
+}
+
+@keyframes fade-in-out {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
