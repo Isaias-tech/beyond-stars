@@ -7,6 +7,8 @@ def redirect_if_authenticated(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if current_user.is_authenticated:
+            if current_user.is_admin:
+                return redirect(url_for("admin.admin_profile_page"))
             return redirect(url_for("public.products_page"))
         return f(*args, **kwargs)
 

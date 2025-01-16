@@ -1,5 +1,99 @@
-{% extends "layout.html" %}
+{% extends "public_layout.html" %}
 
-{% block body %}
-<h1>Beyond stars</h1>
-{% endblock body %}
+{% block title %}
+Home - {{ app_name }}
+{% endblock title %}
+
+{% block statics %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/landing.css') }}">
+{% endblock statics %}
+
+{% block content %}
+<main style="background-image: url('{{ url_for('static', filename='media/backgrounds/galaxy-1.webp') }}');">
+    <section id="home">
+        <h2>Welcome to {{ app_name }}</h2>
+        <p>Your one-stop shop for astronomy-related products!</p>
+        <div class="img-container">
+            <img src="{{url_for('static', filename='media/brand/space-man-brand.svg')}}" alt="beyond-stars-logo">
+        </div>
+        <a href="/products" class="cta-button">Shop Now</a>
+    </section>
+
+    <section id="statistics"
+        style="background-image: url('{{ url_for('static', filename='media/backgrounds/space-divider-galaxy-1.svg') }}');">
+        <div class="statistics-container">
+            <div class="stat">
+                <span>30K+</span>
+                <p>Clients</p>
+            </div>
+            <div class="stat">
+                <span>5K+</span>
+                <p>Producs</p>
+            </div>
+            <div class="stat">
+                <span>8+</span>
+                <p>Years</p>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="available-products">
+        <h2>Our Products</h2>
+        <p>Explore our selection of premium telescopes, star maps, and other stargazing essentials.</p>
+
+        <div class="container-card-products">
+            {% for index in range(8) %}
+            <div class="card-container">
+                <h4 class="title-card">
+                    Refracting Telescope for Kids Beginners
+                </h4>
+                <div class="img-card-container">
+                    <img src="{{url_for('static', filename='media/telescope-img/Gskyer-Telescope-refactor.jpg')}}"
+                        alt="refracting telescope Gskyer">
+                </div>
+                <div class="texts">
+                    <h4 class="price-title">Original price:</h4>
+                    <h4 class="original-price">$429.99</h4>
+                    <h4 class="price-now">Now: $96.99</h4>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <a href="/products" class="cta-button">View more</a>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <h3>If you have any questions you can contact the {{app_name}} team.</h3>
+        <div class="contact-body">
+            <div class="img-container">
+                <img src="{{url_for('static', filename='media/brand/space-man-brand.svg')}}" alt="beyond-stars-logo">
+            </div>
+            <form method="POST" action="/contact">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+
+</main>
+
+<footer>
+    <p>&copy; {{ current_year }} {{ app_name }}. All rights reserved.</p>
+    <ul class="footer-nav">
+        <li><a href="/privacy">Privacy Policy</a></li>
+        <li><a href="/terms">Terms of Service</a></li>
+        <li><a href="/sitemap">Sitemap</a></li>
+    </ul>
+</footer>
+{% endblock content %}

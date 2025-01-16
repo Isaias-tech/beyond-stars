@@ -1,7 +1,8 @@
 from extensions import db, migrate, login_manager
+from flask import Flask, send_from_directory
 from routes.router import router
 from dotenv import load_dotenv
-from flask import Flask, send_from_directory
+from datetime import datetime
 import os
 
 # Models import for migration recognition
@@ -43,7 +44,7 @@ router(app)
 
 @app.context_processor
 def inject_app_name():
-    return {"app_name": app.name}
+    return {"app_name": app.name, "current_year": datetime.year}
 
 
 @app.route("/uploads/<path:filename>")

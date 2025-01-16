@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{url_for('static', filename='media/brand/favicon.ico')}}" type="image/x-icon">
+    <title> {% block title %} {{ app_name }} {% endblock title %} </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Space+Grotesk:wght@300..700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/public-main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/product-card.css') }}">
+    {% block statics %}{% endblock statics %}
+</head>
+
+<body>
+    <div id="flash-messages-container"></div>
+    <header>
+        <nav>
+            <a href="/" class="brand">
+                <div class="img-container">
+                    <img src="{{ url_for('static', filename='media/brand/beyond-stars-logo.svg') }}"
+                        alt="beyond-stars-logo">
+                </div>
+                <h1>{{ app_name }}</h1>
+            </a>
+            {% block navigation %}
+            <ul class="navbar">
+                <li><a href="#">Home</a></li>
+                <li><a href="#available-products">Products</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <div class="actions">
+                    <a href="/register">Register</a>
+                    <a href="/login">Login</a>
+                </div>
+            </ul>
+            {% endblock navigation %}
+        </nav>
+    </header>
+    {% block content %}{% endblock content %}
+    <script>
+        const flashMessages = [
+            {% for category, message in get_flashed_messages(with_categories = True) %}
+        { category: "{{ category }}", message: "{{ message }}" }
+        {% if not loop.last %}, {% endif %}
+        {% endfor %}
+    ];
+    </script>
+    <script src="{{ url_for('static', filename='javascript/main.js') }}"></script>
+</body>
+
+</html>

@@ -1,39 +1,68 @@
-{% extends "auth/layout.html" %}
+{% extends "public_layout.html" %}
 
 {% block title %}
 Register - {{ app_name }}
 {% endblock title %}
 
-{% block form %}
-<form method="POST" action="{{ url_for('public.register_page') }}">
-    {{form.csrf_token}}
-    <div class="form-controller">
-        <label for="{{ form.profile.first_name.name }}">{{ form.profile.first_name.label }}:</label>
-        {{ form.profile.first_name(placeholder="John") }}
+{% block statics %}
+<link rel="stylesheet" href="{{url_for('static', filename='styles/auth.css')}}">
+{% endblock statics %}
+
+{% block navigation %}
+<ul class="navbar">
+    <li><a href="/">Home</a></li>
+    <li><a href="/#available-products">Products</a></li>
+    <li><a href="/#contact">Contact</a></li>
+    <div class="actions">
+        <a href="#">Register</a>
+        <a href="/login">Login</a>
     </div>
-    <div class="form-controller">
-        <label for="{{ form.profile.last_name.name }}">{{ form.profile.last_name.label }}:</label>
-        {{ form.profile.last_name(placeholder="Doe") }}
-    </div>
-    <div class="form-controller">
-        <label for="{{ form.email.name }}">{{ form.email.label }}:</label>
-        {{ form.email(placeholder="john@company.com") }}
-    </div>
-    <div class="form-controller">
-        <label for="{{ form.password.name }}">{{ form.password.label }}:</label>
-        {{ form.password(placeholder="••••••••") }}
-    </div>
-    <div class="form-controller">
-        <label for="{{ form.confirm_password.name }}">{{ form.confirm_password.label }}:</label>
-        {{ form.confirm_password(placeholder="••••••••") }}
-    </div>
-    {% for field, errors in form.errors.items() %}
-    <div class="alert alert-error">
-        {{ form[field].label }}: {{ ', '.join(errors) }}
-    </div>
-    {% endfor %}
-    <div class="action">
-        {{ form.submit }}
-    </div>
-</form>
-{% endblock form %}
+</ul>
+{% endblock navigation %}
+
+{% block content %}
+<main style="background-image: url('{{ url_for('static', filename='media/backgrounds/starry-night.webp') }}');">
+    <section>
+        <h2>Welcome to {{app_name}}!!</h2>
+        <div class="img-container">
+            <img src="{{url_for('static', filename='media/brand/space-man-brand.svg')}}" alt="beyond-stars-logo">
+        </div>
+        <p class="text-below">The astronomy store where you’ll fine everything you need</p>
+    </section>
+    <section>
+        <h2 class="join-us">Join and get all the astronomy stuffs that you need in {{app_name}}</h2>
+        <form method="POST" action="{{ url_for('public.register_page') }}">
+            {{form.csrf_token}}
+            <div class="form-controller">
+                <label for="{{ form.profile.first_name.name }}">{{ form.profile.first_name.label }}:</label>
+                {{ form.profile.first_name(placeholder="John") }}
+            </div>
+            <div class="form-controller">
+                <label for="{{ form.profile.last_name.name }}">{{ form.profile.last_name.label }}:</label>
+                {{ form.profile.last_name(placeholder="Doe") }}
+            </div>
+            <div class="form-controller">
+                <label for="{{ form.email.name }}">{{ form.email.label }}:</label>
+                {{ form.email(placeholder="john@company.com") }}
+            </div>
+            <div class="form-controller">
+                <label for="{{ form.password.name }}">{{ form.password.label }}:</label>
+                {{ form.password(placeholder="••••••••") }}
+            </div>
+            <div class="form-controller">
+                <label for="{{ form.confirm_password.name }}">{{ form.confirm_password.label }}:</label>
+                {{ form.confirm_password(placeholder="••••••••") }}
+            </div>
+            {% for field, errors in form.errors.items() %}
+            <div class="alert alert-error">
+                {{ form[field].label.text + ": " + ', '.join(errors) }}
+            </div>
+            {% endfor %}
+            <div class="form-actions">
+                <button type="submit">Register</button>
+            </div>
+        </form>
+        <p class="already-account">Already have an account? <a href="/login"><strong>Login now</strong></a></p>
+    </section>
+</main>
+{% endblock %}

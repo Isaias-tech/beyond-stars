@@ -1,9 +1,9 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Blueprint, flash, redirect, render_template, url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from decorators.auth_decorators import redirect_if_authenticated
 from forms.user import LoginForm, RegisterForm, LogoutForm
 from flask_login import login_user, current_user
-from app import user as userModels, db
+from app import user as userModels, db, product as productModels
 
 public_blueprints = Blueprint("public", __name__)
 
@@ -71,7 +71,8 @@ def register_page():
 
 @public_blueprints.route("/products", methods=["GET"])
 def products_page():
-    context = {"user": None}
+    # Default context for user authentication
+    context = {"user": None, "products": [], "categories": []}
 
     if current_user.is_authenticated:
         profile = userModels.UserProfile.query.filter_by(
@@ -81,9 +82,54 @@ def products_page():
         context["profile"] = profile
         context["form"] = LogoutForm()
 
+    # Search and filter logic
+    search_query = request.args.get("search", "").strip()
+    category_id = request.args.get("category", "").strip()
+
+    # Query products
+    products_query = productModels.Product.query
+
+    # Apply search filter
+    if search_query:
+        products_query = products_query.filter(
+            productModels.Product.title.ilike(f"%{search_query}%")
+            | productModels.Product.description.ilike(f"%{search_query}%")
+        )
+
+    # Apply category filter
+    if category_id:
+        products_query = products_query.join(productModels.Product.categories).filter(
+            productModels.ProductCategory.id == category_id
+        )
+
+    # Fetch filtered products
+    products = products_query.all()
+
+    # Fetch all categories for the filter dropdown
+    categories = productModels.ProductCategory.query.all()
+
+    # Add products and categories to the context
+    context["products"] = products
+    context["categories"] = categories
+
     return render_template("public/products.html", **context)
 
 
 @public_blueprints.route("/products/<int:id>", methods=["GET"])
 def product_details_page(id: int):
-    return render_template("public/product_details.html")
+    # Default context for user authentication
+    context = {"user": None, "product": None}
+
+    if current_user.is_authenticated:
+        profile = userModels.UserProfile.query.filter_by(
+            user_id=current_user.id
+        ).first()
+        context["user"] = current_user
+        context["profile"] = profile
+        context["form"] = LogoutForm()
+
+    # Fetch the product by ID
+    product = productModels.Product.query.get_or_404(id)
+    context["product"] = product
+
+    return render_template("public/product_details.html", **context)

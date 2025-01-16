@@ -1,22 +1,52 @@
-{% extends "auth/layout.html" %}
+{% extends "public_layout.html" %}
 
 {% block title %}
 Login - {{ app_name }}
 {% endblock title %}
 
-{% block form %}
-<form method="POST" action="{{ url_for('public.login_page') }}">
-    {{form.csrf_token}}
-    <div class="form-controller">
-        <label for="{{ form.email.name }}">{{ form.email.label }}:</label>
-        {{ form.email(placeholder="john@company.com") }}
+{% block statics %}
+<link rel="stylesheet" href="{{url_for('static', filename='styles/auth.css')}}">
+{% endblock statics %}
+
+{% block navigation %}
+<ul class="navbar">
+    <li><a href="/">Home</a></li>
+    <li><a href="/#available-products">Products</a></li>
+    <li><a href="/#contact">Contact</a></li>
+    <div class="actions">
+        <a href="/auth/register">Register</a>
+        <a href="#">Login</a>
     </div>
-    <div class="form-controller">
-        <label for="{{ form.password.name }}">{{ form.password.label }}:</label>
-        {{ form.password(placeholder="••••••••") }}
-    </div>
-    <div class="action">
-        {{ form.submit }}
-    </div>
-</form>
-{% endblock form %}
+</ul>
+{% endblock navigation %}
+
+{% block content %}
+<main style="background-image: url('{{ url_for('static', filename='media/backgrounds/starry-night.webp') }}');">
+    <section>
+        <h2>Welcome back to {{app_name}}!!</h2>
+        <div class="img-container">
+            <img src="{{url_for('static', filename='media/brand/space-man-brand.svg')}}" alt="beyond-stars-logo">
+        </div>
+        <p class="text-below">The astronomy store where you’ll fine everything you need</p>
+    </section>
+    <section>
+        <h2 class="welcome">Welcome back to {{app_name}}</h2>
+        <form method="POST" action="{{ url_for('public.login_page') }}">
+            {{form.csrf_token}}
+            <div class="form-controller">
+                <label for="{{ form.email.name }}">{{ form.email.label }}:</label>
+                {{ form.email(placeholder="john@company.com") }}
+            </div>
+            <div class="form-controller">
+                <label for="{{ form.password.name }}">{{ form.password.label }}:</label>
+                {{ form.password(placeholder="••••••••") }}
+            </div>
+            <div class="form-actions">
+                <button type="submit">Login</button>
+            </div>
+        </form>
+        <p class="register">No accounnt yet? <a href="/register"><strong>Register now</strong></a></p>
+    </section>
+
+</main>
+{% endblock %}
