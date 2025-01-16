@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import (
+    MultipleFileField,
     StringField,
     TextAreaField,
     DecimalField,
@@ -7,6 +8,7 @@ from wtforms import (
     SelectMultipleField,
     SubmitField,
 )
+from flask_wtf.file import FileAllowed
 from wtforms.validators import DataRequired, Length, NumberRange
 
 
@@ -39,6 +41,13 @@ class ProductForm(FlaskForm):
         "Categories",
         coerce=int,  # Assumes category IDs will be integers
         validators=[DataRequired()],
+    )
+
+    pictures = MultipleFileField(
+        "Product Pictures",
+        validators=[
+            FileAllowed(["jpg", "jpeg", "png", "gif"], "Images only!"),
+        ],
     )
     submit = SubmitField("Save Product")
 

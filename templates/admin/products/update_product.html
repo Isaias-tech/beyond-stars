@@ -102,8 +102,8 @@ Update Product - {{ product.title }}
         </div>
     </div>
     <div class="form-controller">
-        <label for="new_pictures">Add New Pictures</label>
-        <input type="file" name="new_pictures" id="new_pictures" multiple>
+        <label for="{{ form.pictures.id }}">{{ form.pictures.label }}</label>
+        {{ form.pictures }}
     </div>
     <div class="action">
         {{ form.submit }}

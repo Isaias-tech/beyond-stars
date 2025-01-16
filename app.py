@@ -1,7 +1,7 @@
 from extensions import db, migrate, login_manager
 from routes.router import router
 from dotenv import load_dotenv
-from flask import Flask
+from flask import Flask, send_from_directory
 import os
 
 # Models import for migration recognition
@@ -20,8 +20,10 @@ SECRET_KEY = os.getenv("SECRET_KEY", "In$e(ur3-$3(r37-k3y")
 SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URI", "sqlite:///db.sqlite3")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
+app.config["UPLOAD_FOLDER"] = os.path.join("static", "uploads", "products")
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16 MB upload limit
 app.config["SECRET_KEY"] = SECRET_KEY
 
 db.init_app(app=app)
@@ -42,6 +44,11 @@ router(app)
 @app.context_processor
 def inject_app_name():
     return {"app_name": app.name}
+
+
+@app.route("/uploads/<path:filename>")
+def uploaded_files(filename):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 
 if __name__ == "__main__":

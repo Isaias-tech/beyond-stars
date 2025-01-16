@@ -21,7 +21,9 @@ from forms.user import (
 )
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import os
+from flask import current_app, request
+from werkzeug.utils import secure_filename
 
 admin_blueprints = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -238,10 +240,21 @@ def products_management_page():
     return render_template("admin/products/products_management.html", **context)
 
 
-@admin_blueprints.route("/products/<int:id>", methods=["GET"])
+@admin_blueprints.route("/products/<int:id>", methods=["GET", "POST"])
 @login_required
 def product_details_page(id: int):
     product = productModels.Product.query.get_or_404(id)
+
+    if request.method == "POST":
+        if "remove_pictures" in request.form:
+            picture_ids = request.form.getlist("remove_pictures")
+            productModels.ProductPicture.query.filter(
+                productModels.ProductPicture.id.in_(picture_ids)
+            ).delete(synchronize_session=False)
+            db.session.commit()
+            flash("Selected pictures were successfully removed.", "success")
+            return redirect(url_for("admin.product_details_page", id=id))
+
     return render_template(
         "admin/products/product_details.html",
         product=product,
@@ -293,16 +306,38 @@ def update_product_page(id: int):
     form.categories.data = [category.id for category in product.categories]
 
     if form.validate_on_submit():
+        # Update product fields
         product.title = form.title.data
         product.sub_title = form.sub_title.data
         product.properties = form.properties.data
         product.description = form.description.data
         product.price = form.price.data
         product.stocks = form.stocks.data
+
         # Update categories
         product.categories = productModels.ProductCategory.query.filter(
             productModels.ProductCategory.id.in_(form.categories.data)
         ).all()
+
+        # Handle new pictures
+        if form.pictures.data:
+            upload_folder = os.path.join(
+                current_app.root_path, current_app.config["UPLOAD_FOLDER"]
+            )
+            os.makedirs(upload_folder, exist_ok=True)
+
+            for picture in form.pictures.data:
+                # Secure the filename
+                filename = secure_filename(picture.filename)
+                filepath = os.path.join(upload_folder, filename)
+                picture.save(filepath)
+
+                # Add picture to the database
+                new_picture = productModels.ProductPicture(
+                    url=f"/{current_app.config['UPLOAD_FOLDER']}/{filename}",
+                    product_id=product.id,
+                )
+                db.session.add(new_picture)
 
         db.session.commit()
         flash("Product updated successfully!", "success")

@@ -90,3 +90,9 @@ ENV/
 
 .vscode
 .venv
+
+# Ignore everything in uploads/products
+static/uploads/products/*
+
+# Except the .gitkeep file
+!static/uploads/products/.gitkeep

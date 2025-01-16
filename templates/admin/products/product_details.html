@@ -24,14 +24,26 @@ Product Details - {{ product.title }}
     {% endfor %}
 </ul>
 
-<h2>Product Pictures</h2>
-<div class="product-images">
-    {% for picture in product.product_id %}
-    <img src="{{ picture.url }}" alt="Product Image" style="max-width: 200px; margin: 10px;">
-    {% else %}
-    <p>No pictures available for this product.</p>
-    {% endfor %}
-</div>
+<h2>Existing Pictures</h2>
+<form method="POST" action="{{ url_for('admin.product_details_page', id=product.id) }}">
+    <div class="product-images">
+        {% for picture in product.product_id %}
+        <div class="image-container">
+            <img src="{{ picture.url }}" alt="Product Image" style="max-width: 200px; margin: 10px;">
+            <label>
+                <input type="checkbox" name="remove_pictures" value="{{ picture.id }}">
+                Remove
+            </label>
+        </div>
+        {% else %}
+        <p>No pictures available for this product.</p>
+        {% endfor %}
+    </div>
+    <div class="action">
+        <button type="submit" class="btn-danger">Remove Selected Pictures</button>
+    </div>
+</form>
+
 
 <div class="actions">
     <a href="{{ url_for('admin.update_product_page', id=product.id) }}" class="btn-primary">Edit Product</a>
