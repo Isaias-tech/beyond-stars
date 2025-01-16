@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, json, redirect, render_template, request, url_for
 from decorators.auth_decorators import redirect_if_authenticated
 from forms.user import LoginForm, RegisterForm, LogoutForm
 from flask_login import login_user, current_user
@@ -11,7 +11,14 @@ public_blueprints = Blueprint("public", __name__)
 @public_blueprints.route("/", methods=["GET"])
 @redirect_if_authenticated
 def landing_page():
-    return render_template("landing.html")
+    # Fetch the first 8 products
+    products = (
+        productModels.Product.query.order_by(productModels.Product.id.asc())
+        .limit(8)
+        .all()
+    )
+
+    return render_template("landing.html", products=products)
 
 
 @public_blueprints.route("/login", methods=["GET", "POST"])
@@ -132,4 +139,8 @@ def product_details_page(id: int):
     product = productModels.Product.query.get_or_404(id)
     context["product"] = product
 
-    return render_template("public/product_details.html", **context)
+    product_properties = json.loads(product.properties)
+
+    return render_template(
+        "public/product_details.html", **context, product_properties=product_properties
+    )

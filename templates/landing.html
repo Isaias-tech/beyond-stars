@@ -43,19 +43,19 @@ Home - {{ app_name }}
         <p>Explore our selection of premium telescopes, star maps, and other stargazing essentials.</p>
 
         <div class="container-card-products">
-            {% for index in range(8) %}
+            {% for product in products %}
             <div class="card-container">
                 <h4 class="title-card">
-                    Refracting Telescope for Kids Beginners
+                    {{ product.title }}
                 </h4>
                 <div class="img-card-container">
-                    <img src="{{url_for('static', filename='media/telescope-img/Gskyer-Telescope-refactor.jpg')}}"
-                        alt="refracting telescope Gskyer">
+                    <img src="{{ product.product_id[0].url if product.product_id|length > 0 else url_for('static', filename='media/default-product.png') }}"
+                        alt="{{ product.title }}">
                 </div>
                 <div class="texts">
                     <h4 class="price-title">Original price:</h4>
-                    <h4 class="original-price">$429.99</h4>
-                    <h4 class="price-now">Now: $96.99</h4>
+                    <h4 class="original-price">${{ "%.2f"|format(product.price * 1.3) }}</h4>
+                    <h4 class="price-now">Now: ${{ "%.2f"|format(product.price) }}</h4>
                 </div>
             </div>
             {% endfor %}
