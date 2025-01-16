@@ -76,3 +76,27 @@ class AccountDeleteForm(FlaskForm):
         "I confirm I want to delete this account", validators=[DataRequired()]
     )
     submit = SubmitField("Delete Account")
+
+
+class NonAdminUserProfileForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    first_name = StringField("First Name", validators=[DataRequired(), Length(max=75)])
+    last_name = StringField("Last Name", validators=[DataRequired(), Length(max=150)])
+    phone_number = StringField("Phone Number", validators=[Optional(), Length(max=21)])
+    address = TextAreaField("Address", validators=[Optional(), Length(max=500)])
+
+
+class UserForm(FlaskForm):
+    email = EmailField("Email", validators=[DataRequired(), Email()])
+    is_admin = BooleanField("Admin Privileges")
+    profile = FormField(NonAdminUserProfileForm)
+    submit = SubmitField("Save")
+
+
+class DeleteUserForm(FlaskForm):
+    confirm_delete = BooleanField(
+        "I confirm I want to delete this user", validators=[DataRequired()]
+    )
+    submit = SubmitField("Delete User")

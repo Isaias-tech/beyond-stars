@@ -30,6 +30,7 @@ User management - {{ app_name }}
                     <td>{{ "Yes" if u.is_admin else "No" }}</td>
                     <td>
                         <div class="user-actions">
+                            <a href="/admin/users/{{ u.id }}">User details</a>
                             <a href="/admin/users/{{ u.id }}/update">Update User</a>
                             <a href="/admin/users/{{ u.id }}/delete">Delete User</a>
                         </div>

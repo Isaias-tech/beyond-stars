@@ -5,7 +5,20 @@ from app import (
     product as productModels,
     transaction as transactionModels,
 )
-from forms.user import AccountDeleteForm, PasswordUpdateForm, UserUpdateForm
+from forms.products import (
+    CategoryForm,
+    DeleteCategoryForm,
+    DeleteProductForm,
+    ProductForm,
+)
+from forms.user import (
+    AccountDeleteForm,
+    DeleteUserForm,
+    PasswordUpdateForm,
+    RegisterForm,
+    UserForm,
+    UserUpdateForm,
+)
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -94,37 +107,6 @@ def delete_admin_account():
     return render_template("admin/delete_account.html", form=form)
 
 
-@admin_blueprints.route("/products", methods=["GET"])
-@login_required
-def products_management_page():
-    context = {"products": productModels.Product.query.all()}
-    return render_template("admin/products/products_management.html", **context)
-
-
-@admin_blueprints.route("/products/<int:id>", methods=["GET"])
-@login_required
-def product_details_page(id: int):
-    return render_template("admin/products/product_details.html")
-
-
-@admin_blueprints.route("/products/create", methods=["GET", "POST"])
-@login_required
-def create_product_page():
-    return render_template("admin/products/create_product.html")
-
-
-@admin_blueprints.route("/products/<int:id>/update", methods=["GET", "PUT", "PATCH"])
-@login_required
-def update_product_page(id: int):
-    return render_template("admin/products/update_product.html")
-
-
-@admin_blueprints.route("/products/<int:id>/delete", methods=["GET", "DELETE"])
-@login_required
-def delete_product_page(id: int):
-    return render_template("admin/products/delete_product.html")
-
-
 @admin_blueprints.route("/users", methods=["GET"])
 @login_required
 def users_management_page():
@@ -135,25 +117,97 @@ def users_management_page():
 @admin_blueprints.route("/users/<int:id>", methods=["GET"])
 @login_required
 def user_details_page(id: int):
-    return render_template("admin/users/user_details.html")
+    user = userModels.User.query.get_or_404(id)
+    return render_template("admin/users/user_details.html", user=user)
 
 
 @admin_blueprints.route("/users/create", methods=["GET", "POST"])
 @login_required
 def create_user_page():
-    return render_template("admin/users/create_user.html")
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        # Hash the password
+        hashed_password = generate_password_hash(form.password.data)
+
+        # Create a new user
+        new_user = userModels.User(
+            email=form.email.data,
+            is_admin=False,  # Default to non-admin, can be adjusted based on form logic
+            password=hashed_password,
+        )
+
+        # Create associated profile
+        new_user_profile = userModels.UserProfile(
+            first_name=form.profile.first_name.data,
+            last_name=form.profile.last_name.data,
+            user=new_user,
+        )
+
+        db.session.add(new_user)
+        db.session.add(new_user_profile)
+        db.session.commit()
+        flash("User created successfully!", "success")
+        return redirect(url_for("admin.user_details_page", id=new_user.id))
+
+    return render_template("admin/users/create_user.html", form=form)
 
 
-@admin_blueprints.route("/users/<int:id>/update", methods=["GET", "PUT", "PATCH"])
+@admin_blueprints.route("/users/<int:id>/update", methods=["GET", "POST"])
 @login_required
 def update_user_page(id: int):
-    return render_template("admin/users/update_user.html")
+    user = userModels.User.query.get_or_404(id)
+    form = UserForm(
+        obj=user,
+        profile={
+            "first_name": user.user_profile.first_name if user.user_profile else "",
+            "last_name": user.user_profile.last_name if user.user_profile else "",
+            "phone_number": user.user_profile.phone_number if user.user_profile else "",
+            "address": user.user_profile.address if user.user_profile else "",
+        },
+    )
+
+    if form.validate_on_submit():
+        print("Form is valid and submitted.")  # Debugging: Check if validation passes
+
+        # Update user fields
+        user.email = form.email.data
+        user.is_admin = form.is_admin.data
+
+        # Update profile fields
+        if user.user_profile:
+            user.user_profile.first_name = form.profile.first_name.data
+            user.user_profile.last_name = form.profile.last_name.data
+            user.user_profile.phone_number = form.profile.phone_number.data
+            user.user_profile.address = form.profile.address.data
+
+        db.session.commit()
+        flash("User updated successfully!", "success")
+        return redirect(url_for("admin.user_details_page", id=user.id))
+
+    # Debugging: Show form errors if any
+    if form.errors:
+        print("Form errors:", form.errors)
+
+    return render_template("admin/users/update_user.html", form=form, user=user)
 
 
-@admin_blueprints.route("/users/<int:id>/delete", methods=["GET", "DELETE"])
+@admin_blueprints.route("/users/<int:id>/delete", methods=["GET", "POST"])
 @login_required
 def delete_user_page(id: int):
-    return render_template("admin/users/delete_user.html")
+    user = userModels.User.query.get_or_404(id)
+    form = DeleteUserForm()
+
+    if form.validate_on_submit():
+        if form.confirm_delete.data:
+            db.session.delete(user)
+            db.session.commit()
+            flash("User deleted successfully!", "success")
+            return redirect(url_for("admin.users_management_page"))
+
+        flash("Account deletion not confirmed.", "warning")
+
+    return render_template("admin/users/delete_user.html", form=form, user=user)
 
 
 @admin_blueprints.route("/transactions", methods=["GET"])
@@ -177,6 +231,105 @@ def cancel_transactions_page(id: int):
     return render_template("admin/transactions/transaction_details.html")
 
 
+@admin_blueprints.route("/products", methods=["GET"])
+@login_required
+def products_management_page():
+    context = {"products": productModels.Product.query.all()}
+    return render_template("admin/products/products_management.html", **context)
+
+
+@admin_blueprints.route("/products/<int:id>", methods=["GET"])
+@login_required
+def product_details_page(id: int):
+    product = productModels.Product.query.get_or_404(id)
+    return render_template(
+        "admin/products/product_details.html",
+        product=product,
+    )
+
+
+@admin_blueprints.route("/products/create", methods=["GET", "POST"])
+@login_required
+def create_product_page():
+    form = ProductForm()
+    form.categories.choices = [
+        (category.id, category.name)
+        for category in productModels.ProductCategory.query.all()
+    ]
+
+    if form.validate_on_submit():
+        new_product = productModels.Product(
+            title=form.title.data,
+            sub_title=form.sub_title.data,
+            properties=form.properties.data,
+            description=form.description.data,
+            price=form.price.data,
+            stocks=form.stocks.data,
+        )
+        # Assign categories
+        new_product.categories = productModels.ProductCategory.query.filter(
+            productModels.ProductCategory.id.in_(form.categories.data)
+        ).all()
+
+        db.session.add(new_product)
+        db.session.commit()
+        flash("Product created successfully!", "success")
+        return redirect(url_for("admin.product_details_page", id=new_product.id))
+
+    return render_template("admin/products/create_product.html", form=form)
+
+
+@admin_blueprints.route("/products/<int:id>/update", methods=["GET", "POST"])
+@login_required
+def update_product_page(id: int):
+    product = productModels.Product.query.get_or_404(id)
+    form = ProductForm(obj=product)
+    form.categories.choices = [
+        (category.id, category.name)
+        for category in productModels.ProductCategory.query.all()
+    ]
+
+    # Pre-fill selected categories
+    form.categories.data = [category.id for category in product.categories]
+
+    if form.validate_on_submit():
+        product.title = form.title.data
+        product.sub_title = form.sub_title.data
+        product.properties = form.properties.data
+        product.description = form.description.data
+        product.price = form.price.data
+        product.stocks = form.stocks.data
+        # Update categories
+        product.categories = productModels.ProductCategory.query.filter(
+            productModels.ProductCategory.id.in_(form.categories.data)
+        ).all()
+
+        db.session.commit()
+        flash("Product updated successfully!", "success")
+        return redirect(url_for("admin.product_details_page", id=product.id))
+
+    return render_template(
+        "admin/products/update_product.html", form=form, product=product
+    )
+
+
+@admin_blueprints.route("/products/<int:id>/delete", methods=["GET", "POST"])
+@login_required
+def delete_product_page(id: int):
+    product = productModels.Product.query.get_or_404(id)
+    form = DeleteProductForm()
+
+    if form.validate_on_submit():
+        db.session.delete(product)
+        db.session.commit()
+        flash("Product deleted successfully!", "success")
+        return redirect(url_for("admin.category_management_page"))
+
+    return render_template(
+        "admin/products/delete_product.html", form=form, product=product
+    )
+
+
 @admin_blueprints.route("/product-categories", methods=["GET"])
 @login_required
 def category_management_page():
@@ -189,20 +342,47 @@ def category_management_page():
 @admin_blueprints.route("/product-categories/create", methods=["GET", "POST"])
 @login_required
 def create_category_page():
-    return render_template("admin/product_categories/create_category.html")
+    form = CategoryForm()
+
+    if form.validate_on_submit():
+        new_category = productModels.ProductCategory(name=form.name.data)
+        db.session.add(new_category)
+        db.session.commit()
+        flash("Category created successfully!", "success")
+        return redirect(url_for("admin.category_management_page"))
+
+    return render_template("admin/product_categories/create_category.html", form=form)
 
 
-@admin_blueprints.route(
-    "/product-categories/<int:id>/update", methods=["GET", "PUT", "PATCH"]
-)
+@admin_blueprints.route("/product-categories/<int:id>/update", methods=["GET", "POST"])
 @login_required
 def update_category_page(id: int):
-    return render_template("admin/product_categories/update_category.html")
+    category = productModels.ProductCategory.query.get_or_404(id)
+    form = CategoryForm(obj=category)
+
+    if form.validate_on_submit():
+        category.name = form.name.data
+        db.session.commit()
+        flash("Category updated successfully!", "success")
+        return redirect(url_for("admin.category_management_page"))
+
+    return render_template(
+        "admin/product_categories/update_category.html", form=form, category=category
+    )
 
 
-@admin_blueprints.route(
-    "/product-categories/<int:id>/delete", methods=["GET", "DELETE"]
-)
+@admin_blueprints.route("/product-categories/<int:id>/delete", methods=["GET", "POST"])
 @login_required
 def delete_category_page(id: int):
-    return render_template("admin/product_categories/delete_category.html")
+    category = productModels.ProductCategory.query.get_or_404(id)
+    form = DeleteCategoryForm()
+
+    if form.validate_on_submit():
+        db.session.delete(category)
+        db.session.commit()
+        flash("Category deleted successfully!", "success")
+        return redirect(url_for("admin.category_management_page"))
+
+    return render_template(
+        "admin/product_categories/delete_category.html", form=form, category=category
+    )

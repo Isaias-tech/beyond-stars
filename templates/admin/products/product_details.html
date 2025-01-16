@@ -1,7 +1,40 @@
 {% extends "admin/products/layout.html" %}
 
 {% block title %}
-Product details - {{ app_name }}
+Product Details - {{ product.title }}
 {% endblock title %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+<h1>{{ product.title }}</h1>
+
+<p><strong>Subtitle:</strong> {{ product.sub_title or "N/A" }}</p>
+<p><strong>Price:</strong> ${{ "%.2f" | format(product.price) }}</p>
+<p><strong>Stocks:</strong> {{ product.stocks }}</p>
+<p><strong>Description:</strong> {{ product.description }}</p>
+<p><strong>Properties:</strong>
+<pre>{{ product.properties }}</pre>
+</p>
+
+<h2>Categories</h2>
+<ul>
+    {% for category in product.categories %}
+    <li>{{ category.name }}</li>
+    {% else %}
+    <p>No categories associated with this product.</p>
+    {% endfor %}
+</ul>
+
+<h2>Product Pictures</h2>
+<div class="product-images">
+    {% for picture in product.product_id %}
+    <img src="{{ picture.url }}" alt="Product Image" style="max-width: 200px; margin: 10px;">
+    {% else %}
+    <p>No pictures available for this product.</p>
+    {% endfor %}
+</div>
+
+<div class="actions">
+    <a href="{{ url_for('admin.update_product_page', id=product.id) }}" class="btn-primary">Edit Product</a>
+    <a href="{{ url_for('admin.delete_product_page', id=product.id) }}" class="btn-danger">Delete Product</a>
+</div>
+{% endblock content %}

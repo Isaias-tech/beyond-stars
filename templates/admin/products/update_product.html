@@ -1,7 +1,112 @@
 {% extends "admin/products/layout.html" %}
 
 {% block title %}
-Update product - {{ app_name }}
+Update Product - {{ product.title }}
 {% endblock title %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+<h1>Update Product</h1>
+<form method="POST" action="{{ url_for('admin.update_product_page', id=product.id) }}" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="form-controller">
+        <label for="{{ form.title.id }}">{{ form.title.label }}</label>
+        {{ form.title(placeholder="Enter the product title") }}
+        {% if form.title.errors %}
+        <ul>
+            {% for error in form.title.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.sub_title.id }}">{{ form.sub_title.label }}</label>
+        {{ form.sub_title(placeholder="Enter the product subtitle") }}
+        {% if form.sub_title.errors %}
+        <ul>
+            {% for error in form.sub_title.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.properties.id }}">{{ form.properties.label }}</label>
+        {{ form.properties(placeholder="Enter product properties in JSON format") }}
+        {% if form.properties.errors %}
+        <ul>
+            {% for error in form.properties.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.description.id }}">{{ form.description.label }}</label>
+        {{ form.description(placeholder="Enter the product description") }}
+        {% if form.description.errors %}
+        <ul>
+            {% for error in form.description.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.price.id }}">{{ form.price.label }}</label>
+        {{ form.price(placeholder="Enter the product price") }}
+        {% if form.price.errors %}
+        <ul>
+            {% for error in form.price.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.stocks.id }}">{{ form.stocks.label }}</label>
+        {{ form.stocks(placeholder="Enter the stock quantity") }}
+        {% if form.stocks.errors %}
+        <ul>
+            {% for error in form.stocks.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.categories.id }}">{{ form.categories.label }}</label>
+        {{ form.categories }}
+        {% if form.categories.errors %}
+        <ul>
+            {% for error in form.categories.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="pictures">Existing Pictures</label>
+        <div class="product-images">
+            {% for picture in product.product_id %}
+            <div class="image-container">
+                <img src="{{ picture.url }}" alt="Product Image" style="max-width: 200px;">
+                <label>
+                    <input type="checkbox" name="remove_pictures" value="{{ picture.id }}">
+                    Remove
+                </label>
+            </div>
+            {% else %}
+            <p>No pictures available for this product.</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form-controller">
+        <label for="new_pictures">Add New Pictures</label>
+        <input type="file" name="new_pictures" id="new_pictures" multiple>
+    </div>
+    <div class="action">
+        {{ form.submit }}
+    </div>
+</form>
+{% endblock content %}

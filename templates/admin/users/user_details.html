@@ -1,7 +1,18 @@
 {% extends "admin/users/layout.html" %}
 
 {% block title %}
-User details - {{ app_name }}
+User Details - {{ app_name }}
 {% endblock title %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+<h1>User Details</h1>
+<p><strong>Email:</strong> {{ user.email }}</p>
+<p><strong>Admin Status:</strong> {{ "Yes" if user.is_admin else "No" }}</p>
+<h2>Profile Information</h2>
+<p><strong>First Name:</strong> {{ user.user_profile.first_name }}</p>
+<p><strong>Last Name:</strong> {{ user.user_profile.last_name }}</p>
+<p><strong>Phone Number:</strong> {{ user.user_profile.phone_number or "N/A" }}</p>
+<p><strong>Address:</strong> {{ user.user_profile.address or "N/A" }}</p>
+<a href="{{ url_for('admin.update_user_page', id=user.id) }}" class="btn-primary">Edit User</a>
+<a href="{{ url_for('admin.delete_user_page', id=user.id) }}" class="btn-danger">Delete User</a>
+{% endblock content %}

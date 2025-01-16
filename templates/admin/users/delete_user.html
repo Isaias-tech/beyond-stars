@@ -1,7 +1,20 @@
 {% extends "admin/users/layout.html" %}
 
 {% block title %}
-Delete user - {{ app_name }}
+{{ "Create" if "create" in request.path else "Update" if "update" in request.path else "Delete" }} User - {{ app_name }}
 {% endblock title %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+<h1>Delete User</h1>
+<p>Are you sure you want to delete this user? This action cannot be undone.</p>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-controller">
+        <label for="{{ form.confirm_delete.id }}">{{ form.confirm_delete.label }}</label>
+        {{ form.confirm_delete }}
+    </div>
+    <div class="action">
+        {{ form.submit }}
+    </div>
+</form>
+{% endblock content %}

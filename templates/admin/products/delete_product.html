@@ -1,7 +1,16 @@
 {% extends "admin/products/layout.html" %}
 
 {% block title %}
-Delete product - {{ app_name }}
+Delete Product - {{ product.title }}
 {% endblock title %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+<h1>Delete Product</h1>
+<p>Are you sure you want to delete the product <strong>{{ product.title }}</strong>? This action cannot be undone.</p>
+<form method="POST" action="{{ url_for('admin.delete_product_page', id=product.id) }}">
+    {{ form.hidden_tag() }}
+    <div class="action">
+        {{ form.confirm_delete }}
+    </div>
+</form>
+{% endblock content %}

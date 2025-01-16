@@ -1,7 +1,97 @@
 {% extends "admin/products/layout.html" %}
 
+
 {% block title %}
-Create product - {{ app_name }}
+Create Product - {{ app_name }}
 {% endblock title %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+<h1>Create Product</h1>
+<form method="POST" action="{{ url_for('admin.create_product_page') }}" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="form-controller">
+        <label for="{{ form.title.id }}">{{ form.title.label }}</label>
+        {{ form.title(placeholder="Enter the product title") }}
+        {% if form.title.errors %}
+        <ul>
+            {% for error in form.title.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.sub_title.id }}">{{ form.sub_title.label }}</label>
+        {{ form.sub_title(placeholder="Enter the product subtitle") }}
+        {% if form.sub_title.errors %}
+        <ul>
+            {% for error in form.sub_title.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.properties.id }}">{{ form.properties.label }}</label>
+        {{ form.properties(placeholder="Enter product properties in JSON format") }}
+        {% if form.properties.errors %}
+        <ul>
+            {% for error in form.properties.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.description.id }}">{{ form.description.label }}</label>
+        {{ form.description(placeholder="Enter the product description") }}
+        {% if form.description.errors %}
+        <ul>
+            {% for error in form.description.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.price.id }}">{{ form.price.label }}</label>
+        {{ form.price(placeholder="Enter the product price") }}
+        {% if form.price.errors %}
+        <ul>
+            {% for error in form.price.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.stocks.id }}">{{ form.stocks.label }}</label>
+        {{ form.stocks(placeholder="Enter the stock quantity") }}
+        {% if form.stocks.errors %}
+        <ul>
+            {% for error in form.stocks.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="{{ form.categories.id }}">{{ form.categories.label }}</label>
+        {{ form.categories }}
+        {% if form.categories.errors %}
+        <ul>
+            {% for error in form.categories.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="form-controller">
+        <label for="pictures">Product Pictures</label>
+        <input type="file" name="pictures" id="pictures" multiple>
+    </div>
+    <div class="action">
+        {{ form.submit }}
+    </div>
+</form>
+{% endblock content %}

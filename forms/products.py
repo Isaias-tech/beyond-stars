@@ -1,30 +1,59 @@
-from wtforms.validators import DataRequired, Length
 from flask_wtf import FlaskForm
 from wtforms import (
-    FloatField,
-    IntegerField,
-    SelectField,
-    SelectMultipleField,
     StringField,
-    SubmitField,
     TextAreaField,
+    DecimalField,
+    IntegerField,
+    SelectMultipleField,
+    SubmitField,
 )
+from wtforms.validators import DataRequired, Length, NumberRange
 
 
 class ProductForm(FlaskForm):
-    title = StringField("Title", validators=[DataRequired(), Length(max=250)])
-    sub_title = StringField("Sub title", validators=[DataRequired(), Length(max=500)])
-    properties = SelectMultipleField("Properties", validators=[DataRequired()])
-    property_value = StringField("Property value", validators=[DataRequired()])
-    description = TextAreaField("Description")
-    price = FloatField("Price", validators=[DataRequired()])
-    stocks = IntegerField("Stoks", validators=[DataRequired()])
+    title = StringField(
+        "Product Title",
+        validators=[DataRequired(), Length(max=250)],
+    )
+    sub_title = StringField(
+        "Product Subtitle",
+        validators=[Length(max=500)],
+    )
+    properties = TextAreaField(
+        "Product Properties (JSON format)",
+        validators=[DataRequired()],
+    )
+    description = TextAreaField(
+        "Description",
+        validators=[DataRequired()],
+    )
+    price = DecimalField(
+        "Price (USD)",
+        validators=[DataRequired(), NumberRange(min=0)],
+    )
+    stocks = IntegerField(
+        "Stock Quantity",
+        validators=[DataRequired(), NumberRange(min=0)],
+    )
+    categories = SelectMultipleField(
+        "Categories",
+        coerce=int,  # Assumes category IDs will be integers
+        validators=[DataRequired()],
+    )
+    submit = SubmitField("Save Product")
 
-    submit = SubmitField("Save")
+
+class CategoryForm(FlaskForm):
+    name = StringField(
+        "Category Name",
+        validators=[DataRequired(), Length(max=100)],
+    )
+    submit = SubmitField("Save Category")
 
 
-class AddProductPictureForm(FlaskForm):
-    product = SelectField("Product", validators=[DataRequired()])
-    url = TextAreaField("URL", validators=[DataRequired()])
+class DeleteProductForm(FlaskForm):
+    confirm_delete = SubmitField("Delete Product")
 
-    submit = SubmitField("Save")
+
+class DeleteCategoryForm(FlaskForm):
+    confirm_delete = SubmitField("Delete Category")
