@@ -5,6 +5,7 @@ from app import (
     product as productModels,
     transaction as transactionModels,
 )
+from decorators.auth_decorators import is_admin_validator
 from forms.products import (
     CategoryForm,
     DeleteCategoryForm,
@@ -39,12 +40,14 @@ def inject_authenticated_user():
 
 @admin_blueprints.route("/profile", methods=["GET"])
 @login_required
+@is_admin_validator
 def admin_profile_page():
     return render_template("admin/profile.html")
 
 
 @admin_blueprints.route("/profile/update", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def update_admin_profile_page():
     form = UserUpdateForm(obj=current_user)
 
@@ -74,6 +77,7 @@ def update_admin_profile_page():
 
 @admin_blueprints.route("/profile/update-password/", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def change_admin_password():
     form = PasswordUpdateForm()
 
@@ -93,6 +97,7 @@ def change_admin_password():
 
 @admin_blueprints.route("/profile/delete/", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def delete_admin_account():
     form = AccountDeleteForm()
 
@@ -111,6 +116,7 @@ def delete_admin_account():
 
 @admin_blueprints.route("/users", methods=["GET"])
 @login_required
+@is_admin_validator
 def users_management_page():
     context = {"users": userModels.User.query.all()}
     return render_template("admin/users/user_management.html", **context)
@@ -118,6 +124,7 @@ def users_management_page():
 
 @admin_blueprints.route("/users/<int:id>", methods=["GET"])
 @login_required
+@is_admin_validator
 def user_details_page(id: int):
     user = userModels.User.query.get_or_404(id)
     return render_template("admin/users/user_details.html", user=user)
@@ -125,6 +132,7 @@ def user_details_page(id: int):
 
 @admin_blueprints.route("/users/create", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def create_user_page():
     form = RegisterForm()
 
@@ -157,6 +165,7 @@ def create_user_page():
 
 @admin_blueprints.route("/users/<int:id>/update", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def update_user_page(id: int):
     user = userModels.User.query.get_or_404(id)
     form = UserForm(
@@ -196,6 +205,7 @@ def update_user_page(id: int):
 
 @admin_blueprints.route("/users/<int:id>/delete", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def delete_user_page(id: int):
     user = userModels.User.query.get_or_404(id)
     form = DeleteUserForm()
@@ -214,6 +224,7 @@ def delete_user_page(id: int):
 
 @admin_blueprints.route("/transactions", methods=["GET"])
 @login_required
+@is_admin_validator
 def transactions_page():
     context = {"transactions": transactionModels.Transaction.query.all()}
     return render_template("admin/transactions/transaction_details.html", **context)
@@ -221,6 +232,7 @@ def transactions_page():
 
 @admin_blueprints.route("/transactions/<int:id>", methods=["GET"])
 @login_required
+@is_admin_validator
 def transactions_details_page(id: int):
     return render_template("admin/transactions/cancel_transaction.html")
 
@@ -229,12 +241,14 @@ def transactions_details_page(id: int):
     "/transactions/<int:id>/cancel", methods=["GET", "PUT", "PATCH"]
 )
 @login_required
+@is_admin_validator
 def cancel_transactions_page(id: int):
     return render_template("admin/transactions/transaction_details.html")
 
 
 @admin_blueprints.route("/products", methods=["GET"])
 @login_required
+@is_admin_validator
 def products_management_page():
     context = {"products": productModels.Product.query.all()}
     return render_template("admin/products/products_management.html", **context)
@@ -242,6 +256,7 @@ def products_management_page():
 
 @admin_blueprints.route("/products/<int:id>", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def product_details_page(id: int):
     product = productModels.Product.query.get_or_404(id)
 
@@ -263,6 +278,7 @@ def product_details_page(id: int):
 
 @admin_blueprints.route("/products/create", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def create_product_page():
     form = ProductForm()
     form.categories.choices = [
@@ -294,6 +310,7 @@ def create_product_page():
 
 @admin_blueprints.route("/products/<int:id>/update", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def update_product_page(id: int):
     product = productModels.Product.query.get_or_404(id)
     form = ProductForm(obj=product)
@@ -350,6 +367,7 @@ def update_product_page(id: int):
 
 @admin_blueprints.route("/products/<int:id>/delete", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def delete_product_page(id: int):
     product = productModels.Product.query.get_or_404(id)
     form = DeleteProductForm()
@@ -367,6 +385,7 @@ def delete_product_page(id: int):
 
 @admin_blueprints.route("/product-categories", methods=["GET"])
 @login_required
+@is_admin_validator
 def category_management_page():
     context = {"categories": productModels.ProductCategory.query.all()}
     return render_template(
@@ -376,6 +395,7 @@ def category_management_page():
 
 @admin_blueprints.route("/product-categories/create", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def create_category_page():
     form = CategoryForm()
 
@@ -391,6 +411,7 @@ def create_category_page():
 
 @admin_blueprints.route("/product-categories/<int:id>/update", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def update_category_page(id: int):
     category = productModels.ProductCategory.query.get_or_404(id)
     form = CategoryForm(obj=category)
@@ -408,6 +429,7 @@ def update_category_page(id: int):
 
 @admin_blueprints.route("/product-categories/<int:id>/delete", methods=["GET", "POST"])
 @login_required
+@is_admin_validator
 def delete_category_page(id: int):
     category = productModels.ProductCategory.query.get_or_404(id)
     form = DeleteCategoryForm()
