@@ -4,4 +4,53 @@
 Products management - {{ app_name }}
 {% endblock title %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+<div class="sub-header">
+    <h2>Product Management</h2>
+    <div class="sub-header-actions">
+        <a href="/admin/products/create">Add Product</a>
+    </div>
+</div>
+<div class="table-container">
+    <div class="rows-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Title</th>
+                    <th>Sub-title</th>
+                    <th>Price</th>
+                    <th>Stocks</th>
+                    <th>Categories</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.title }}</td>
+                    <td>{{ product.sub_title or "N/A" }}</td>
+                    <td>${{ "%.2f" | format(product.price) }}</td>
+                    <td>{{ product.stocks }}</td>
+                    <td>
+                        {% if product.categories %}
+                        {{ product.categories|map(attribute='name')|join(', ') }}
+                        {% else %}
+                        No Categories
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="user-actions">
+                            <a href="/admin/products/{{ product.id }}/details/">View</a>
+                            <a href="/admin/products/{{ product.id }}/update/">Edit</a>
+                            <a href="/admin/products/{{ product.id }}/delete/">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

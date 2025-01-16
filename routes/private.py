@@ -11,7 +11,7 @@ def profile_page():
     return render_template("private/profile.html")
 
 
-@private_blueprints.route("/logout", methods=["POST"])
+@private_blueprints.route("/logout", methods=["GET"])
 @login_required
 def logout_page():
     logout_user()

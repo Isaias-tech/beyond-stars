@@ -28,7 +28,7 @@ def login_page():
         if user and check_password_hash(user.password, password):
             login_user(user)
             flash("Login successful!", "success")
-            return redirect("public.products_page")
+            return redirect(url_for("public.products_page"))
         else:
             flash("Invalid email or password. Please try again.", "error")
 

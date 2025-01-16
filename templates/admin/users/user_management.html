@@ -4,4 +4,41 @@
 User management - {{ app_name }}
 {% endblock title %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+<div class="sub-header">
+    <h2>User management</h2>
+    <div class="sub-header-actions">
+        <a href="/admin/users/create">Create user account</a>
+    </div>
+</div>
+<div class="table-container">
+    <div class="rows-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>User Email</th>
+                    <th>Is Admin?</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.id }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ "Yes" if u.is_admin else "No" }}</td>
+                    <td>
+                        <div class="user-actions">
+                            <a href="/admin/users/{{ u.id }}/update">Update User</a>
+                            <a href="/admin/users/{{ u.id }}/delete">Delete User</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}

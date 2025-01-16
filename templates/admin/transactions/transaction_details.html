@@ -4,4 +4,52 @@
 Transaction details - {{ app_name }}
 {% endblock title %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+<div class="sub-header">
+    <h2>Orders and Transactions</h2>
+    <div class="sub-header-actions">
+        <a href="/admin/transactions/create">Add Transaction</a>
+    </div>
+</div>
+<div class="table-container">
+    <div class="rows-container">
+        <div class="table-container">
+            <div class="rows-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Invoice Number</th>
+                            <th>Customer Email</th>
+                            <th>Status</th>
+                            <th>Amount</th>
+                            <th>Issued At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in transactions %}
+                        <tr>
+                            <td>{{ transaction.invoice_number }}</td>
+                            <td>{{ transaction.customer_email }}</td>
+                            <td>{{ transaction.status }}</td>
+                            <td>${{ "%.2f" | format(transaction.amount) }}</td>
+                            <td>{{ transaction.issued_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+                            <td>
+                                <div class="user-actions">
+                                    <a href="/admin/transactions/{{ transaction.id }}/details/">View</a>
+                                    {% if transaction.status == 'Pending' %}
+                                    <a href="/admin/transactions/{{ transaction.id }}/cancel/">Cancel</a>
+                                    {% else %}
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

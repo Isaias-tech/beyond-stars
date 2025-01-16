@@ -4,6 +4,11 @@
 Profile - {{ app_name }}
 {% endblock title %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/user_profile.css') }}">
+{% endblock styles %}
+
 {% block side_bar %}
 <ul>
     <li class="your-account active">
@@ -21,4 +26,30 @@ Profile - {{ app_name }}
     <li><a href="{{ url_for('admin.category_management_page') }}">Product categories management</a></li>
 </ul>
 {% endblock side_bar %}
-{% block content %}{% endblock content %}
+{% block content %}
+<div class="profile-container">
+    <h2 class="profile-heading">User Profile</h2>
+    <div class="profile-header">
+        <div class="profile-img-container">
+            <img src="{{ user.user_profile.profile_picture or url_for('static', filename='media/icons/default-user.svg') }}"
+                alt="Profile Picture" class="profile-img">
+        </div>
+        <div class="profile-info">
+            <h3 class="profile-name">{{ user.user_profile.first_name }} {{ user.user_profile.last_name }}</h3>
+            <p class="profile-detail">Email: {{ user.email }}</p>
+            <p class="profile-detail">Phone: {{ user.user_profile.phone_number or "N/A" }}</p>
+            <p class="profile-detail">Address: {{ user.user_profile.address or "N/A" }}</p>
+            <p class="profile-detail">Account Created: {{ user.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p class="profile-detail">Last Updated: {{ user.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p class="profile-detail">Admin Status: {{ "Yes" if user.is_admin else "No" }}</p>
+        </div>
+    </div>
+
+    <div class="profile-actions">
+        <a href="/admin/profile/update" class="profile-btn-primary">Update Profile</a>
+        <a href="/admin/profile/update-password/" class="profile-btn-secondary">Change Password</a>
+        <a href="/admin/profile/delete/" class="profile-btn-danger">Delete User</a>
+    </div>
+</div>
+
+{% endblock content %}

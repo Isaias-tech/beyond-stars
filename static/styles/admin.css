@@ -92,3 +92,183 @@ li a {
 li.active {
     background-color: #a05987;
 }
+
+
+.sub-header {
+    display         : flex;
+    justify-content : space-between;
+    align-items     : center;
+    background-color: #a05987;
+    padding         : 10px 20px;
+    border-radius   : 8px;
+    margin-bottom   : 20px;
+    color           : #fff;
+    width           : 100%;
+}
+
+.sub-header h2 {
+    margin   : 0;
+    font-size: 1.5em;
+}
+
+.sub-header-actions a {
+    display         : inline-block;
+    padding         : 10px 15px;
+    background-color: #3b1f52;
+    color           : #fff;
+    text-decoration : none;
+    border-radius   : 5px;
+    font-size       : 14px;
+    font-weight     : bold;
+    transition      : background-color 0.3s ease, color 0.3s ease;
+}
+
+.sub-header-actions a:hover {
+    background-color: #582b70;
+    color           : #f0e6f6;
+}
+
+table {
+    width          : 100%;
+    border-collapse: collapse;
+    background     : #fff;
+    box-shadow     : 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius  : 8px;
+    overflow       : hidden;
+    table-layout   : fixed;
+    text-align     : left;
+}
+
+thead {
+    width           : 100%;
+    position        : sticky;
+    top             : 0;
+    z-index         : 1;
+    background-color: #3b1f52;
+    color           : #fff;
+}
+
+thead th {
+    font-weight: bold;
+    padding    : 10px;
+}
+
+tbody {
+    /* Allow independent scrolling */
+    max-height: 70vh;
+    /* Set maximum height */
+    overflow  : auto;
+    /* Enable vertical scrolling */
+}
+
+tbody td {
+    padding      : 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr {
+    width       : 100%;
+    table-layout: fixed;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f5edf4;
+}
+
+tbody tr:hover {
+    background-color: #f0d9e6;
+}
+
+
+.user-actions {
+    display: flex;
+    gap    : 10px;
+}
+
+.user-actions a {
+    text-decoration: none;
+    color          : #a05987;
+    font-weight    : bold;
+    padding        : 5px 10px;
+    border         : 1px solid #a05987;
+    border-radius  : 5px;
+    transition     : all 0.3s ease;
+}
+
+.user-actions a:hover {
+    background-color: #a05987;
+    color           : #fff;
+}
+
+.rows-container {
+    border-radius: 10px;
+    width        : 100%;
+    max-height   : 80vh;
+    overflow     : auto;
+}
+
+
+form {
+    background-color: #fff;
+    border          : 1px solid #9f5986;
+    border-radius   : 8px;
+    padding         : 20px;
+    box-shadow      : 0 4px 10px rgba(0, 0, 0, 0.1);
+    width           : 100%;
+    max-width       : 400px;
+}
+
+.form-controller {
+    margin-bottom: 15px;
+}
+
+.form-controller label {
+    display      : block;
+    margin-bottom: 5px;
+    font-weight  : bold;
+    color        : #3b1f52;
+}
+
+input,
+textarea,
+button {
+    width           : 100%;
+    padding         : 10px;
+    border          : 1px solid #9f5986;
+    border-radius   : 4px;
+    font-size       : 14px;
+    color           : #3b1f52;
+    background-color: #fff;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #9f5986;
+}
+
+textarea {
+    resize: none;
+    height: 80px;
+}
+
+button {
+    background-color: #3b1f52;
+    color           : white;
+    font-weight     : bold;
+    cursor          : pointer;
+    transition      : background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #9f5986;
+}
+
+.action {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.action button {
+    width  : auto;
+    padding: 10px 20px;
+}

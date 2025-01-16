@@ -1,14 +1,11 @@
-from wtforms.validators import DataRequired, Length, EqualTo
+from wtforms.validators import DataRequired, Length, EqualTo, Optional, Email
 from wtforms.meta import DefaultMeta
 from flask_wtf import FlaskForm
 from wtforms import (
     BooleanField,
     EmailField,
-    FileField,
     FormField,
-    IntegerField,
     PasswordField,
-    SelectField,
     StringField,
     SubmitField,
     TextAreaField,
@@ -46,44 +43,36 @@ class RegisterForm(FlaskForm):
     submit = SubmitField("Register")
 
 
-class UpdateUserForm(FlaskForm):
-    email = EmailField("Email", validators=[DataRequired("Email is required.")])
-    is_admin = BooleanField("Is admin")
+class UserProfileForm(FlaskForm):
+    class Meta:
+        csrf = False
 
-    submit = SubmitField("Save")
-
-
-class DeleteUserForm(FlaskForm):
-    submit = SubmitField("Delete")
-
-
-class UpdateUserProfileForm(FlaskForm):
     first_name = StringField("First Name", validators=[DataRequired()])
     last_name = StringField("Last Name", validators=[DataRequired()])
-    phone_number = StringField("Phone number", validators=[Length(max=21)])
-    address = TextAreaField("Address")
-    profile_picture = FileField("Profile picture")
-
-    submit = SubmitField("Save")
+    phone_number = StringField("Phone Number", validators=[Optional()])
+    address = TextAreaField("Address", validators=[Optional()])
 
 
-class UpdatePasswordForm(FlaskForm):
-    current_password = PasswordField(
-        "Current password", validators=[DataRequired(), Length(min=8)]
-    )
+class UserUpdateForm(FlaskForm):
+    profile = FormField(UserProfileForm)
+    email = EmailField("Email", validators=[DataRequired(), Email()])
+    is_admin = BooleanField("Admin Privileges")
+    submit = SubmitField("Update User")
+
+
+class PasswordUpdateForm(FlaskForm):
+    current_password = PasswordField("Current Password", validators=[DataRequired()])
     new_password = PasswordField(
-        "New password", validators=[DataRequired(), Length(min=8)]
+        "New Password", validators=[DataRequired(), Length(min=8)]
     )
-    confirm_new_password = PasswordField(
-        "Confirm new password",
-        validators=[DataRequired(), EqualTo("new_password")],
+    confirm_password = PasswordField(
+        "Confirm New Password", validators=[DataRequired(), EqualTo("new_password")]
     )
+    submit = SubmitField("Update Password")
 
-    submit = SubmitField("Save")
 
-
-class UpdateCart(FlaskForm):
-    product = SelectField("Select product", validators=[DataRequired()])
-    quantity = IntegerField("Quantity", validators=[DataRequired()])
-
-    submit = SubmitField("Save")
+class AccountDeleteForm(FlaskForm):
+    confirm_delete = BooleanField(
+        "I confirm I want to delete this account", validators=[DataRequired()]
+    )
+    submit = SubmitField("Delete Account")

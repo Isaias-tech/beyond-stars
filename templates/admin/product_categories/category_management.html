@@ -4,4 +4,40 @@
 Category management - {{ app_name }}
 {% endblock title %}
 
-{% block content %}{% endblock content %}
+{% block content %}
+<div class="sub-header">
+    <h2>Product Category Management</h2>
+    <div class="sub-header-actions">
+        <a href="/admin/product-categories/create">Add Product</a>
+    </div>
+</div>
+<div class="table-container">
+    <div class="rows-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Category ID</th>
+                    <th>Category Name</th>
+                    <th>Number of Products</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in categories %}
+                <tr>
+                    <td>{{ category.id }}</td>
+                    <td>{{ category.name }}</td>
+                    <td>{{ category.products | length }}</td>
+                    <td>
+                        <div class="user-actions">
+                            <a href="/admin/product-categories/{{ category.id }}/update/">Edit</a>
+                            <a href="/admin/product-categories/{{ category.id }}/delete/">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

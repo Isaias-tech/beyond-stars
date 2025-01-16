@@ -1,6 +1,13 @@
 from utils.general import get_date
 from app import db
 
+product_category_association = db.Table(
+    "product_category_association",
+    db.Model.metadata,
+    db.Column("product_id", db.Integer, db.ForeignKey("product.id")),
+    db.Column("category_id", db.Integer, db.ForeignKey("product_category.id")),
+)
+
 
 class Product(db.Model):
     __tablename__ = "product"
@@ -17,6 +24,11 @@ class Product(db.Model):
 
     # Relations
     product_id = db.relationship("ProductPicture", backref="product")
+    categories = db.relationship(
+        "ProductCategory",
+        secondary=product_category_association,
+        back_populates="products",
+    )
 
 
 class ProductPicture(db.Model):
@@ -27,3 +39,16 @@ class ProductPicture(db.Model):
 
     # Relations
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"))
+
+
+class ProductCategory(db.Model):
+    __tablename__ = "product_category"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+
+    products = db.relationship(
+        "Product",
+        secondary=product_category_association,
+        back_populates="categories",
+    )
